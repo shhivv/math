@@ -1,4 +1,4 @@
-import { Mafs, Plot, Theme, useStopwatch } from "mafs"
+import { Mafs, Plot, Theme, useStopwatch, Text } from "mafs"
 import { useEffect } from "react"
 
 export default function Sin(){

@@ -11,6 +11,7 @@ module.exports = {
       fontFamily: {
         sans: ['var(--font-inter)', ...fontFamily.sans],
         heading: ['var(--font-rhd)', ...fontFamily.sans],
+        math: ['CMU Serif', ...fontFamily.sans]
       },
     },
   },

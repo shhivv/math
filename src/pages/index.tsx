@@ -11,8 +11,8 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="bg-black h-screen w-screentext-center lg:text-start overflow-x-hidden flex flex-col justify-between">
-        <div className='pt-24 px-24 w-4/5 space-y-4 bg-transparent'>
+      <main className="h-screen w-screen text-center lg:text-start overflow-x-hidden flex flex-col justify-between bg-black">
+        <div className='pt-24 px-24 w-4/5 space-y-4'>
           <div className='font-heading font-bold'>
           <h1 className='text-4xl text-neutral-300'>Moiré</h1>
           <p className='text-xl  text-neutral-500'>Intriguing math simulations</p>
