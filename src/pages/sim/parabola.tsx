@@ -216,7 +216,7 @@ export default function Parabola() {
               onChange={(event) => {
                 let newK = +event.target.value;
                 turning.setPoint([calculateH({ a, b, c }), newK]);
-                setK(newK);
+                movingFocus.setPoint([h, newK])
               }}
             />
             <div>
