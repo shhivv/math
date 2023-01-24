@@ -1,20 +1,22 @@
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
+import "@/styles/globals.css";
+import type { AppProps } from "next/app";
 
-import { Inter } from '@next/font/google'
-import { Red_Hat_Display } from '@next/font/google'
+import { Karla } from "@next/font/google";
+import { Red_Hat_Display } from "@next/font/google";
 
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-})
+const karla = Karla({
+  subsets: ["latin"],
+  variable: "--font-karla",
+});
 const rhd = Red_Hat_Display({
-  subsets: ['latin'],
-  variable: "--font-rhd"
-})
+  subsets: ["latin"],
+  variable: "--font-rhd",
+});
 
 export default function App({ Component, pageProps }: AppProps) {
-  return  <main className={`${inter.variable} ${rhd.variable} font-sans`}>
-  <Component {...pageProps} />
-</main>
+  return (
+    <main className={`${karla.variable} ${rhd.variable} font-sans`}>
+      <Component {...pageProps} />
+    </main>
+  );
 }

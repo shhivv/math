@@ -5,6 +5,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.MafsView {
+  --mafs-bg: transparent;
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
