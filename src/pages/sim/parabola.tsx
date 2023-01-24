@@ -9,6 +9,7 @@ import {
 } from "mafs";
 import { useState } from "react";
 import Layout from "../components/layout";
+import {BlockMath, InlineMath} from "react-katex"
 
 interface ICoEfficients {
   a: number;
@@ -56,9 +57,9 @@ function expand(a: number, h: number, k: number) {
 
 // Represent quadratic equation in completing the square form
 function cts({ a, b, c, h, k }: ICoEfficientsWCTS) {
-  return `${a != 1 ? a : ""}(𝑥${h != 0 ? ` ${sign(-h)}` : ""})² ${
+  return <BlockMath math={`${a != 1 ? a : ""}(x${h != 0 ? ` ${sign(-h)}` : ""})^2 ${
     k != 0 ? sign(k) : ""
-  }`;
+  }`}/>
 }
 
 function calculateH({ a, b }: ICoEfficients) {
@@ -114,7 +115,12 @@ export default function Parabola() {
   let c = expand(a, h, k)[1];
 
   const turning = useMovablePoint([-h, k], {
-    constrain: ([x, y]) => [Math.round(x), Math.round(y)],
+    constrain: ([x, y]) => {
+      if(true){// Shift Lock
+        return [Math.round(x), Math.round(y)]
+      }
+      return [x,y]
+    },
   });
 
   const intercept = useMovablePoint([i, k - 1], {
@@ -125,13 +131,10 @@ export default function Parabola() {
 
   const movingFocus = useMovablePoint([h, a + k], {
     constrain: ([_, y]) => {
-      if(Math.round(y) === k){
-        y = y < 0 ? Math.floor(y) : Math.ceil(y) 
-      }else{
-        y = Math.round(y)
-      }
+      y = Math.round(y)
+      
       if (y - k == 0) {
-        if (prevMovingFocusY > 0) {
+        if (prevMovingFocusY <= 0) {
           y = y - 1;
         } else {
           y = y + 1;
@@ -177,13 +180,11 @@ export default function Parabola() {
     >
       <div className="flex  space-x-12 text-xl justify-between">
         <div>
-          <p className="font-math">
-            {a}𝑥² {sign(b)}𝑥 {sign(c)}
-          </p>
-          <p className="font-math">{cts({ a, b, c, h, k })}</p>
+          <BlockMath math={`${a} ${sign(b)}x ${sign(c)}`}/>
+          {cts({ a, b, c, h, k })}
           <div className="flex">
-            Vertex:<p className="font-math">{`(${sign(h)}, ${sign(k)})`}</p>
-            <p>{resolve({ a, b, c, h, k, x: i })}</p>
+            Vertex: <InlineMath math={`(${h}, ${k})`}/>
+            {/* <p>{resolve({ a, b, c, h, k, x: i })}</p> */}
           </div>
         </div>
         <div className="flex flex-col space-y-4 w-2/3">
@@ -192,7 +193,7 @@ export default function Parabola() {
             <input
               type="range"
               min={1}
-              step={1}
+              step={1}  
               max={12}
               value={a}
               className="w-2/3"
