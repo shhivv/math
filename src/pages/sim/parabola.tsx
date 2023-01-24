@@ -1,6 +1,7 @@
 import { Kaisei_HarunoUmi } from "@next/font/google";
 import {
   CartesianCoordinates,
+  Line,
   Plot,
   Point,
   Theme,
@@ -73,10 +74,12 @@ function Graph({
   vars,
   moving,
   movingFocus,
+  intercept,
 }: {
   vars: ICoEfficientsWCTS;
   moving: UseMovablePoint;
   movingFocus: UseMovablePoint;
+  intercept: UseMovablePoint;
 }) {
   const { a, b, c, h, k } = vars;
   let fY = k + (1 / 4) * a;
@@ -95,8 +98,10 @@ function Graph({
         tail={[h, movingFocus.y]}
         tip={[-Math.sqrt((movingFocus.y - k) / a) + h, movingFocus.y]}
       />
+      <Plot.OfY x={() => intercept.x}></Plot.OfY>
       {moving.element}
       {movingFocus.element}
+      {intercept.element}
     </>
   );
 }
@@ -106,6 +111,7 @@ export default function Parabola() {
   let a = 1 / (4 * p);
   let [h, setH] = useState(calculateH({ a, b: 0, c: 0 }));
   let [k, setK] = useState(calculateK({ a, b: 0, c: 0 }));
+  let [i, setI] = useState(-h);
 
   let b = expand(a, h, k)[0];
   let c = expand(a, h, k)[1];
@@ -114,23 +120,24 @@ export default function Parabola() {
     constrain: ([x, y]) => [Math.round(x), Math.round(y)],
   });
 
-  let [prevMovingFocusY, setPrevMovingFocusY] = useState(a+k);
+  const intercept = useMovablePoint([i, k - 1], {
+    constrain: ([x, y]) => [round(x), -1],
+  });
+
+  let [prevMovingFocusY, setPrevMovingFocusY] = useState(a + k);
 
   const movingFocus = useMovablePoint([h, a + k], {
     constrain: ([_, y]) => {
-      y = Math.round(y)
-      console.log(y-k)
-      if(y - k == 0){
-        if(prevMovingFocusY > 0){
-            y = y - 1
-            console.log(y)
-        }else{
-          y = y + 1
-          console.log(y)
+      y = Math.round(y);
+      if (y - k == 0) {
+        if (prevMovingFocusY > 0) {
+          y = y - 1;
+        } else {
+          y = y + 1;
         }
       }
 
-      setPrevMovingFocusY(y)
+      setPrevMovingFocusY(y);
       return [h, y];
     },
   });
@@ -143,12 +150,16 @@ export default function Parabola() {
     movingFocus.setPoint([h, movingFocus.y]);
   }
 
+  if (i != intercept.x) {
+    setI(intercept.x);
+  }
+
   if (movingFocus.y != k + a || k != turning.y) {
     if (k != turning.y) {
-      setK(turning.y)
-      movingFocus.setPoint([movingFocus.x, turning.y + a])
+      setK(turning.y);
+      movingFocus.setPoint([movingFocus.x, turning.y + a]);
     } else {
-      setP(1/(4*(movingFocus.y - k)))
+      setP(1 / (4 * (movingFocus.y - k)));
     }
   }
 
@@ -159,6 +170,7 @@ export default function Parabola() {
           vars={{ a, b, c, h, k }}
           moving={turning}
           movingFocus={movingFocus}
+          intercept={intercept}
         />
       }
     >
@@ -169,7 +181,8 @@ export default function Parabola() {
           </p>
           <p className="font-math">{cts({ a, b, c, h, k })}</p>
           <div className="flex">
-          Vertex:<p className="font-math">{`(${sign(h)}, ${sign(k)})`}</p>
+            Vertex:<p className="font-math">{`(${sign(h)}, ${sign(k)})`}</p>
+            <p>{resolve({ a, b, c, h, k, x: i })}</p>
           </div>
         </div>
         <div className="flex flex-col space-y-4 w-2/3">
@@ -216,7 +229,7 @@ export default function Parabola() {
               onChange={(event) => {
                 let newK = +event.target.value;
                 turning.setPoint([calculateH({ a, b, c }), newK]);
-                movingFocus.setPoint([h, newK])
+                movingFocus.setPoint([h, newK]);
               }}
             />
             <div>
