@@ -22,7 +22,7 @@ export default function Home() {
           <ul className="text-neutral-300 text-lg underline pb-8">
             <li className="flex items-center">
               <Link href="/sim/parabola" target="_blank">
-                Exploring the parabola
+                Transforming the parabola
               </Link>{" "}
               <FiArrowUpRight />
             </li>
@@ -34,7 +34,6 @@ export default function Home() {
           >
             Github
           </Link>
-          {/* <VectorField/> */}
         </div>
       </main>
     </>

@@ -1,7 +1,5 @@
-import { Kaisei_HarunoUmi } from "@next/font/google";
 import {
   CartesianCoordinates,
-  Line,
   Plot,
   Point,
   Theme,
@@ -82,7 +80,6 @@ function Graph({
   intercept: UseMovablePoint;
 }) {
   const { a, b, c, h, k } = vars;
-  let fY = k + (1 / 4) * a;
   return (
     <>
       <CartesianCoordinates />
@@ -121,7 +118,7 @@ export default function Parabola() {
   });
 
   const intercept = useMovablePoint([i, k - 1], {
-    constrain: ([x, y]) => [round(x), -1],
+    constrain: ([x, _]) => [round(x), -1],
   });
 
   let [prevMovingFocusY, setPrevMovingFocusY] = useState(a + k);
