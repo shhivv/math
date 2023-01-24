@@ -125,7 +125,11 @@ export default function Parabola() {
 
   const movingFocus = useMovablePoint([h, a + k], {
     constrain: ([_, y]) => {
-      y = y < 0 ? Math.floor(y) : Math.ceil(y) 
+      if(Math.round(y) === k){
+        y = y < 0 ? Math.floor(y) : Math.ceil(y) 
+      }else{
+        y = Math.round(y)
+      }
       if (y - k == 0) {
         if (prevMovingFocusY > 0) {
           y = y - 1;
