@@ -1,6 +1,6 @@
 @import "mafs/core.css";
 @import "mafs/font.css";
-@import 'katex/dist/katex.min.css';
+@import "katex/dist/katex.min.css";
 
 @tailwind base;
 @tailwind components;

@@ -9,7 +9,7 @@ import {
 } from "mafs";
 import { useState } from "react";
 import Layout from "../components/layout";
-import {BlockMath, InlineMath} from "react-katex"
+import { BlockMath, InlineMath } from "react-katex";
 
 interface ICoEfficients {
   a: number;
@@ -32,7 +32,7 @@ interface ISolvable extends ICoEfficientsWCTS {
 //Math
 
 function round(value: number) {
-  return Math.round((value + Number.EPSILON) * 5) / 5;
+  return Math.round((value + Number.EPSILON) * 100) / 100;
 }
 
 function resolve({ a, b, c, x }: ISolvable) {
@@ -57,11 +57,14 @@ function expand(a: number, h: number, k: number) {
 
 // Represent quadratic equation in completing the square form
 function cts({ a, b, c, h, k }: ICoEfficientsWCTS) {
-  return <BlockMath math={`${a != 1 ? a : ""}(x${h != 0 ? ` ${sign(-h)}` : ""})^2 ${
-    k != 0 ? sign(k) : ""
-  }`}/>
+  return (
+    <BlockMath
+      math={`${a != 1 ? a : ""}(x${h != 0 ? ` ${sign(-h)}` : ""})^2 ${
+        k != 0 ? sign(k) : ""
+      }`}
+    />
+  );
 }
-
 function calculateH({ a, b }: ICoEfficients) {
   return -(b / (2 * a));
 }
@@ -106,7 +109,7 @@ function Graph({
 
 export default function Parabola() {
   let [p, setP] = useState(0.25);
-  let a = 1 / (4 * p);
+  let a = round(1 / (4 * p));
   let [h, setH] = useState(calculateH({ a, b: 0, c: 0 }));
   let [k, setK] = useState(calculateK({ a, b: 0, c: 0 }));
   let [i, setI] = useState(-h);
@@ -114,12 +117,15 @@ export default function Parabola() {
   let b = expand(a, h, k)[0];
   let c = expand(a, h, k)[1];
 
+  let [lock, setLock] = useState(false);
+
   const turning = useMovablePoint([-h, k], {
     constrain: ([x, y]) => {
-      if(true){// Shift Lock
-        return [Math.round(x), Math.round(y)]
+      if (lock) {
+        // Shift Lock
+        return [Math.round(x), Math.round(y)];
       }
-      return [x,y]
+      return [round(x), round(y)];
     },
   });
 
@@ -128,19 +134,22 @@ export default function Parabola() {
   });
 
   let [prevMovingFocusY, setPrevMovingFocusY] = useState(a + k);
-
   const movingFocus = useMovablePoint([h, a + k], {
     constrain: ([_, y]) => {
-      y = Math.round(y)
-      
+      y = round(y);
+      let t = 0.01;
+      if (lock) {
+        y = Math.round(y);
+        t = 1;
+      }
       if (y - k == 0) {
         if (prevMovingFocusY <= 0) {
-          y = y - 1;
+          y = y - t;
         } else {
-          y = y + 1;
+          y = y + t;
         }
       }
-
+      console.log(y);
       setPrevMovingFocusY(y);
       return [h, y];
     },
@@ -157,13 +166,12 @@ export default function Parabola() {
   if (i != intercept.x) {
     setI(intercept.x);
   }
-
-  if (movingFocus.y != k + a || k != turning.y) {
+  if (round(movingFocus.y) != round(k + a) || k != turning.y) {
     if (k != turning.y) {
       setK(turning.y);
       movingFocus.setPoint([movingFocus.x, turning.y + a]);
     } else {
-      setP(1 / (4 * (movingFocus.y - k)));
+      setP(1 / (4 * (round(movingFocus.y) - k)));
     }
   }
 
@@ -180,10 +188,10 @@ export default function Parabola() {
     >
       <div className="flex  space-x-12 text-xl justify-between">
         <div>
-          <BlockMath math={`${a} ${sign(b)}x ${sign(c)}`}/>
+          <BlockMath math={`${a} ${sign(b)}x ${sign(c)}`} />
           {cts({ a, b, c, h, k })}
           <div className="flex">
-            Vertex: <InlineMath math={`(${h}, ${k})`}/>
+            Vertex: <InlineMath math={`(${h}, ${k})`} />
             {/* <p>{resolve({ a, b, c, h, k, x: i })}</p> */}
           </div>
         </div>
@@ -193,7 +201,7 @@ export default function Parabola() {
             <input
               type="range"
               min={1}
-              step={1}  
+              step={1}
               max={12}
               value={a}
               className="w-2/3"
@@ -270,6 +278,12 @@ export default function Parabola() {
                 }}
               />
             </div>
+            <input
+              type="checkbox"
+              onChange={(e) => {
+                e.target.checked ? setLock(true) : setLock(false);
+              }}
+            ></input>
           </div>
         </div>
       </div>
